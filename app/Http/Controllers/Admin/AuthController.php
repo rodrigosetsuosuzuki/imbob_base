@@ -17,7 +17,7 @@ class AuthController extends Controller
             return redirect()->route('admin.home');
         }
         return view('admin.index');
-    }
+    }      
 
     public function home(){
         return view('admin.dashboard');
@@ -43,6 +43,9 @@ class AuthController extends Controller
             $json['message']= $this->message->error('ops, dados não conferem')->render();
             return response()->json($json);
         }
+        
+        // pegando o ip do usuario e chamando o metodo authenticated
+        $this->authenticated($request->getClientIp());
 
         // apos todas as confirmacoes, alimentando uma variavel em json 
         $json['redirect'] = route('admin.home');
@@ -53,6 +56,16 @@ class AuthController extends Controller
     public function logout(){
         Auth::logout();
         return redirect()->route('admin.login');
+    }
+
+    // peganndo o usuario logado
+
+    public function authenticated(string $ip){
+        $user = User::where('id',Auth::user()->id);
+        $user->update([
+            'last_login_at'=>date('Y-m-d H:i:s'),
+            'last_login_ip'=>$ip
+        ]);
     }
 
 }

@@ -21,6 +21,7 @@ Route::group(['prefix'=>'admin','namespace'=>'Admin','as'=>'admin.'],function(){
     // rotas protegidas 
     Route::group(['middleware' => ['auth']], function () {
         Route::get('home','AuthController@home')->name('home');
+        Route::resource('users', 'UserController');
 
     });
 
